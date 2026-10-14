@@ -21,6 +21,8 @@
 namespace od {
 namespace {
 
+constexpr int maxCursorBitmapDimension = 384;
+
 const pw_stream_events streamEvents = [] {
     pw_stream_events events{};
     events.version = PW_VERSION_STREAM_EVENTS;
@@ -239,13 +241,15 @@ void PipeWireCapture::requestCursorMetadata() {
         &builder, SPA_TYPE_OBJECT_ParamMeta, SPA_PARAM_Meta,
         SPA_PARAM_META_type, SPA_POD_Id(SPA_META_Cursor),
         SPA_PARAM_META_size, SPA_POD_CHOICE_RANGE_Int(
-            cursorMetaSize(64, 64), cursorMetaSize(1, 1), cursorMetaSize(128, 128))));
+            cursorMetaSize(64, 64), cursorMetaSize(1, 1),
+            cursorMetaSize(maxCursorBitmapDimension, maxCursorBitmapDimension))));
     const int result = pw_stream_update_params(stream_, parameters, 1);
     if (result < 0) {
         debug(std::string("PipeWire cursor metadata request failed: ") + spa_strerror(result));
         return;
     }
     cursorMetadataRequested_ = true;
+    debug("Requested PipeWire cursor metadata");
 }
 
 void PipeWireCapture::process(void* data) {
@@ -300,13 +304,15 @@ void PipeWireCapture::handleProcess() {
                 const int cursorWidth = static_cast<int>(bitmap->size.width);
                 const int cursorHeight = static_cast<int>(bitmap->size.height);
                 if (bitmapFormat && cursorWidth > 0 && cursorHeight > 0
-                    && cursorWidth <= 128 && cursorHeight <= 128
+                    && cursorWidth <= maxCursorBitmapDimension
+                    && cursorHeight <= maxCursorBitmapDimension
                     && bitmap->stride >= cursorWidth * 4
                     && bitmap->offset >= sizeof(spa_meta_bitmap)
                     && static_cast<std::size_t>(cursor->bitmap_offset)
                         + static_cast<std::size_t>(bitmap->offset)
                         + static_cast<std::size_t>(bitmap->stride) * cursorHeight
-                        <= static_cast<std::size_t>(cursorMetaSize(128, 128))) {
+                        <= static_cast<std::size_t>(cursorMetaSize(
+                            maxCursorBitmapDimension, maxCursorBitmapDimension))) {
                     const auto* pixels = SPA_PTROFF(bitmap, bitmap->offset, std::uint8_t);
                     const auto rowBytes = static_cast<std::size_t>(cursorWidth) * 4;
                     const auto stride = static_cast<std::size_t>(bitmap->stride);
