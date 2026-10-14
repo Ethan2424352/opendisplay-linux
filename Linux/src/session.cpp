@@ -103,7 +103,7 @@ void Session::startPipeline(const PhoneInfo& phone) {
         log("Streaming " + std::to_string(outputWidth) + 'x' + std::to_string(outputHeight)
             + " at up to " + std::to_string(options_.fps) + " fps");
     } catch (...) {
-        if (!pipewireFdHandedOff) {
+        if (!pipewireFdHandedOff && capture.pipewireFd >= 0) {
             ::close(capture.pipewireFd);
         }
         encoder_.stop();

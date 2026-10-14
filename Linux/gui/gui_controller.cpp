@@ -54,7 +54,8 @@ od::CompositorKind compositor(const QString& value) {
     if (value == QStringLiteral("auto")) return od::CompositorKind::Auto;
     if (value == QStringLiteral("kde")) return od::CompositorKind::Kde;
     if (value == QStringLiteral("hyprland")) return od::CompositorKind::Hyprland;
-    throw std::runtime_error("Compositor must be Auto, KDE, or Hyprland.");
+    if (value == QStringLiteral("gnome")) return od::CompositorKind::Gnome;
+    throw std::runtime_error("Compositor must be Auto, KDE, Hyprland, or GNOME.");
 }
 
 od::ExtendDirection extendDirection(const QString& value) {

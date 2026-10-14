@@ -199,7 +199,8 @@ Kirigami.ApplicationWindow {
                     model: [
                         { "text": qsTr("Automatic"), "value": "auto" },
                         { "text": qsTr("KDE Plasma"), "value": "kde" },
-                        { "text": qsTr("Hyprland"), "value": "hyprland" }
+                        { "text": qsTr("Hyprland"), "value": "hyprland" },
+                        { "text": qsTr("GNOME Wayland"), "value": "gnome" }
                     ]
                     Component.onCompleted: root.selectSaved(this, "compositor", "auto")
                 }
