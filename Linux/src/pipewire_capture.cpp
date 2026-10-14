@@ -294,7 +294,7 @@ void PipeWireCapture::handleProcess() {
             CursorUpdate update;
             update.x = cursor->position.x;
             update.y = cursor->position.y;
-            update.visible = update.x >= 0 && update.y >= 0
+            update.visible = cursor->id != 0 && update.x >= 0 && update.y >= 0
                 && update.x < captureWidth_ && update.y < captureHeight_;
 
             if (cursor->id != 0 && cursor->bitmap_offset >= sizeof(spa_meta_cursor)) {
