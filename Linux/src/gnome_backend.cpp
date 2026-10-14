@@ -134,7 +134,7 @@ PortalCapture GnomeBackend::start(const DesktopRequest& request) {
             QStringLiteral("ScreenCast.CreateSession"));
 
         QVariantMap properties;
-        properties.insert(QStringLiteral("cursor-mode"), 1U);  // embedded
+        properties.insert(QStringLiteral("cursor-mode"), 2U);  // metadata
         properties.insert(QStringLiteral("modes"), QVariant::fromValue(modeArray(
             mode(width, height, fps, scale))));
         streamPath_ = objectPath(call(
@@ -177,7 +177,8 @@ PortalCapture GnomeBackend::start(const DesktopRequest& request) {
                            .logicalHeight = logicalHeight_},
                 .pipewireFd = -1,
                 .captureWidth = width,
-                .captureHeight = height};
+                .captureHeight = height,
+                .cursorMetadata = true};
     } catch (...) {
         stop();
         throw;

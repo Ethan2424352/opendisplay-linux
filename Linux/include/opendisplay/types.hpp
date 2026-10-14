@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <optional>
 #include <string>
+#include <vector>
 
 namespace od {
 
@@ -77,6 +78,23 @@ struct CapturedFrame {
     std::int64_t capturedAtMs = 0;
     std::uint64_t sequence = 0;
     std::string bytes;
+};
+
+struct CursorBitmap {
+    int width = 0;
+    int height = 0;
+    int stride = 0;
+    int hotspotX = 0;
+    int hotspotY = 0;
+    VideoFormat::PixelFormat pixelFormat = VideoFormat::PixelFormat::Bgra;
+    std::vector<std::uint8_t> bytes;
+};
+
+struct CursorUpdate {
+    int x = 0;
+    int y = 0;
+    bool visible = false;
+    std::optional<CursorBitmap> bitmap;
 };
 
 struct EncodedFrame {
