@@ -69,10 +69,6 @@ void Session::start(const Endpoint& endpoint) {
 void Session::startPipeline(const PhoneInfo& phone) {
     const int nativeWidth = std::max(2, phone.pixelsWide) & ~1;
     const int nativeHeight = std::max(2, phone.pixelsHigh) & ~1;
-    const int outputWidth = std::max(2, static_cast<int>(std::lround(nativeWidth * options_.scale)))
-        & ~1;
-    const int outputHeight = std::max(2, static_cast<int>(std::lround(nativeHeight * options_.scale)))
-        & ~1;
     const auto capture = desktop_->start(DesktopRequest{
         .mode = options_.mode,
         .receiver = phone,
@@ -80,6 +76,15 @@ void Session::startPipeline(const PhoneInfo& phone) {
         .refreshRate = options_.fps,
         .requestInput = options_.input,
     });
+    // Do not upscale a deliberately smaller virtual mode back to the iPad's
+    // native size. That adds CPU work without restoring detail, and makes the
+    // GUI's Virtual resolution control ineffective as a performance setting.
+    const int outputWidth = std::min(
+        std::max(2, static_cast<int>(std::lround(nativeWidth * options_.scale)) & ~1),
+        std::max(2, capture.captureWidth & ~1));
+    const int outputHeight = std::min(
+        std::max(2, static_cast<int>(std::lround(nativeHeight * options_.scale)) & ~1),
+        std::max(2, capture.captureHeight & ~1));
     bool pipewireFdHandedOff = false;
     try {
         encoder_.start(EncoderConfig{
