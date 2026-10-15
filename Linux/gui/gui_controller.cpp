@@ -112,7 +112,7 @@ od::Options optionsFrom(const QVariantMap& values) {
     options.display.referenceMonitor = text(values, "referenceMonitor").toStdString();
     options.display.extendTo = extendDirection(text(values, "extendTo", "right"));
     options.display.alignTo = alignDirection(text(values, "alignTo", "bottom"));
-    options.fps = values.value(QStringLiteral("fps"), 60).toInt();
+    options.fps = values.value(QStringLiteral("fps"), 30).toInt();
     const double bitrateMbps = values.value(QStringLiteral("bitrateMbps"), 18.0).toDouble();
     options.bitrate = static_cast<int>(std::lround(bitrateMbps * 1'000'000.0));
     options.input = values.value(QStringLiteral("input"), true).toBool();
@@ -205,7 +205,7 @@ void GuiController::connectLast() {
         values.insert(QStringLiteral("compositor"), QStringLiteral("auto"));
         values.insert(QStringLiteral("extendTo"), QStringLiteral("right"));
         values.insert(QStringLiteral("alignTo"), QStringLiteral("bottom"));
-        values.insert(QStringLiteral("fps"), 60);
+        values.insert(QStringLiteral("fps"), 30);
         values.insert(QStringLiteral("bitrateMbps"), 18.0);
         values.insert(QStringLiteral("input"), true);
     }

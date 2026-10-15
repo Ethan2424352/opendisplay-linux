@@ -69,7 +69,7 @@ struct VideoFormat {
     int width = 0;
     int height = 0;
     int stride = 0;
-    int fps = 60;
+    int fps = 30;
     PixelFormat pixelFormat = PixelFormat::Bgra;
 };
 
@@ -113,7 +113,7 @@ struct Options {
     std::string serviceName;
     std::string udid;
     std::string vaapiDevice = "/dev/dri/renderD128";
-    int fps = 60;
+    int fps = 30;
     int bitrate = 18'000'000;
     double scale = 1.0;
     DisplayOptions display;

@@ -292,7 +292,7 @@ Kirigami.ApplicationWindow {
                     Kirigami.FormData.label: qsTr("Frame rate:")
                     from: 1
                     to: 240
-                    value: root.saved("fps", 60)
+                    value: root.saved("fps", 30)
                 }
 
                 Controls.SpinBox {

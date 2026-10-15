@@ -173,7 +173,7 @@ int main(int argc, char* argv[]) {
         "Desktop backend: auto, kde, hyprland, or gnome.", "name", "auto");
     const QCommandLineOption vaapiOption("vaapi-device", "VA-API render node.", "path",
                                          "/dev/dri/renderD128");
-    const QCommandLineOption fpsOption("fps", "Maximum frame rate.", "fps", "60");
+    const QCommandLineOption fpsOption("fps", "Maximum frame rate.", "fps", "30");
     const QCommandLineOption bitrateOption("bitrate", "H.264 bitrate in bits/second.",
                                             "bps", "18000000");
     const QCommandLineOption scaleOption("scale", "Encoded resolution multiplier.", "factor",
