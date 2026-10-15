@@ -78,6 +78,7 @@ void PipeWireCapture::start(const int remoteFd, const std::uint32_t nodeId, cons
     cursorMetadataEnabled_ = cursorMetadata;
     cursorMetadataRequested_ = false;
     cursorMetadataSeen_ = false;
+    bufferStorageLogged_ = false;
     captureWidth_ = width;
     captureHeight_ = height;
     loop_ = pw_thread_loop_new("opendisplay-capture", nullptr);
@@ -172,6 +173,7 @@ void PipeWireCapture::stop() {
     cursorMetadataRequested_ = false;
     cursorMetadataEnabled_ = false;
     cursorMetadataSeen_ = false;
+    bufferStorageLogged_ = false;
     captureWidth_ = 0;
     captureHeight_ = 0;
     format_ = {};
@@ -270,6 +272,19 @@ void PipeWireCapture::handleProcess() {
 
     const auto& data = buffer->datas[0];
     const auto* chunk = data.chunk;
+    if (!bufferStorageLogged_) {
+        const char* storage = "unknown";
+        switch (data.type) {
+        case SPA_DATA_MemPtr: storage = "MemPtr"; break;
+        case SPA_DATA_MemFd: storage = "MemFd"; break;
+        case SPA_DATA_DmaBuf: storage = "DmaBuf"; break;
+        case SPA_DATA_MemId: storage = "MemId"; break;
+        default: break;
+        }
+        debug(std::string("PipeWire buffer storage: ") + storage + ", stride "
+              + std::to_string(chunk->stride) + ", flags " + std::to_string(data.flags));
+        bufferStorageLogged_ = true;
+    }
     const auto width = static_cast<int>(format_.size.width);
     const auto height = static_cast<int>(format_.size.height);
     const int sourceStride = chunk->stride > 0 ? chunk->stride : width * 4;

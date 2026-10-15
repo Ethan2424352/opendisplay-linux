@@ -53,6 +53,7 @@ private:
     bool cursorMetadataRequested_ = false;
     bool cursorMetadataEnabled_ = false;
     bool cursorMetadataSeen_ = false;
+    bool bufferStorageLogged_ = false;
     int captureWidth_ = 0;
     int captureHeight_ = 0;
     std::atomic<std::uint64_t> sequence_ = 0;
