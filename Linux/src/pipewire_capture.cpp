@@ -349,10 +349,17 @@ void PipeWireCapture::handleProcess() {
     frame.capturedAtMs = wallClockMs();
     frame.sequence = sequence_.fetch_add(1);
     frame.bytes.resize(static_cast<std::size_t>(targetStride * height));
-    for (int row = 0; row < height; ++row) {
-        std::memcpy(frame.bytes.data() + static_cast<std::size_t>(row * targetStride),
-                    source + static_cast<std::size_t>(row * sourceStride),
-                    static_cast<std::size_t>(targetStride));
+    if (sourceStride == targetStride) {
+        // Mutter's tightly packed frames are contiguous. One bulk copy avoids
+        // thousands of small memcpy calls on every high-resolution frame.
+        std::memcpy(frame.bytes.data(), source,
+                    static_cast<std::size_t>(targetStride) * height);
+    } else {
+        for (int row = 0; row < height; ++row) {
+            std::memcpy(frame.bytes.data() + static_cast<std::size_t>(row) * targetStride,
+                        source + static_cast<std::size_t>(row) * sourceStride,
+                        static_cast<std::size_t>(targetStride));
+        }
     }
     pw_stream_queue_buffer(stream_, pipewireBuffer);
     if (callback_) {
